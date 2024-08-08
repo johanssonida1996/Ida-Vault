@@ -13,7 +13,7 @@ const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
    return (
-      <Tab.Navigator>
+      <Tab.Navigator initialRouteName="Hem">
          <Tab.Screen 
          name="Rutiner" 
          component={RoutineScreen}
@@ -41,6 +41,14 @@ export default function AppNavigator() {
             ),
             tabBarActiveTintColor: colors.green, 
             tabBarInactiveTintColor: 'grey', 
+            headerStyle: {
+              backgroundColor: 'transparent',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 18
+            },
           }} />
          <Tab.Screen 
          name="Övningar" 
@@ -51,6 +59,14 @@ export default function AppNavigator() {
             ),
             tabBarActiveTintColor: colors.green, 
             tabBarInactiveTintColor: 'grey', 
+            headerStyle: {
+              backgroundColor: 'transparent',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 18
+            },
           }} />
      </Tab.Navigator>
      );

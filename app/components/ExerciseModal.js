@@ -3,38 +3,50 @@ import { View, TextInput, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, 
 import Checkbox from 'expo-checkbox';
 import colors from '../config/colors';
 
-const getCheckboxColor = (isChecked) => {
-  return isChecked ? colors.green : colors.gray;
-};
 
-const ModalForm = ({
+const ExerciseModalForm = ({
   modalVisible,
   setModalVisible,
-  value,
+  valueText,
+  valueLink,
+  valueType,
+  valueName,
+  onChangeType,
   onChangeText,
-  selectedTypes,
-  toggleCheckbox,
-  addRoutine, 
+  onChangeLink,
+  onChangeName,
+  addExercise, 
   nextId
 }) => {
 
   const handleSave = () => {
-    const selectedType = Object.keys(selectedTypes).find(key => selectedTypes[key]);
   
-    if (!selectedType) {
-      alert("Vänligen välj minst en typ.");
+    if (!valueType) {
+      alert("Du måste skriva i en kategori");
+      return;
+    }
+    if (!valueName) {
+      alert("Du måste skriva i en titel");
+      return;
+    }
+    if (!valueText) {
+      alert("Du måste skriva i en övning");
       return;
     }
   
-    const newRoutine = {
-      id: nextId.toString(),  // Använd nextId som ID
-      type: selectedType,
-      description: value,
+    const newExercise = {
+      id: nextId.toString(), 
+      type: valueType,
+      name: valueName,
+      description: valueText,
+      link: valueLink
     };
   
-    addRoutine(newRoutine);
-    onChangeText("");  // Rensa inputfältet
-    toggleCheckbox(null);  // Rensa checkboxar
+    addExercise(newExercise);
+    onChangeType(""); 
+    onChangeText(""); 
+    onChangeLink(""); 
+    onChangeName(""); 
     setModalVisible(false);
   };
 
@@ -53,51 +65,26 @@ const ModalForm = ({
           <View style={styles.modalContainer}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalContentHeading}>Lägg till ny rutin</Text>
-                <Text style={styles.modalText}>Välj typ:</Text>
-                <View style={styles.modalCheckboxes}>
-                  <View style={styles.checkboxRow}>
-                    <View style={styles.checkboxContainer}>
-                      <Checkbox
-                        value={selectedTypes.Morgon}
-                        onValueChange={() => toggleCheckbox('Morgon')}
-                        style={styles.checkbox}
-                        color={getCheckboxColor(selectedTypes.Morgon)}
-                      />
-                      <Text style={styles.checkboxLabel}>Morgon</Text>
-                    </View>
-                    <View style={styles.checkboxContainer}>
-                      <Checkbox
-                        value={selectedTypes.Dag}
-                        onValueChange={() => toggleCheckbox('Dag')}
-                        style={styles.checkbox}
-                        color={getCheckboxColor(selectedTypes.Dag)}
-                      />
-                      <Text style={styles.checkboxLabel}>Dag</Text>
-                    </View>
-                  </View>
-                  <View style={styles.checkboxRow}>
-                    <View style={styles.checkboxContainer}>
-                      <Checkbox
-                        value={selectedTypes.Kväll}
-                        onValueChange={() => toggleCheckbox('Kväll')}
-                        style={styles.checkbox}
-                        color={getCheckboxColor(selectedTypes.Kväll)}
-                      />
-                      <Text style={styles.checkboxLabel}>Kväll</Text>
-                    </View>
-                    <View style={styles.checkboxContainer}>
-                      <Checkbox
-                        value={selectedTypes.Övrigt}
-                        onValueChange={() => toggleCheckbox('Övrigt')}
-                        style={styles.checkbox}
-                        color={getCheckboxColor(selectedTypes.Övrigt)}
-                      />
-                      <Text style={styles.checkboxLabel}>Övrigt</Text>
-                    </View>
-                  </View>
-                </View>
-                <Text style={styles.modalText}>Skriv in din rutin:</Text>
+                <Text style={styles.modalContentHeading}>Lägg till ny övning</Text>
+                <Text style={styles.modalText}>Skriv i vilken typ:</Text>
+                <TextInput 
+                 editable
+                 numberOfLines={1}
+                 maxLength={200}
+                 onChangeText={type => onChangeType(type)}
+                 value={valueType}
+                 style={styles.modalInput1}
+                />
+               <Text style={styles.modalText}>Skriv i titel:</Text>
+                <TextInput 
+                 editable
+                 numberOfLines={1}
+                 maxLength={200}
+                 onChangeName={name => onChangeName(name)}
+                 value={valueName}
+                 style={styles.modalInput1}
+                />
+                <Text style={styles.modalText}>Skriv in din övning:</Text>
                 <View style={styles.modalInputfield}>
                   <TextInput
                     editable
@@ -105,8 +92,20 @@ const ModalForm = ({
                     numberOfLines={7}
                     maxLength={1000}
                     onChangeText={text => onChangeText(text)}
-                    value={value}
+                    value={valueText}
                     style={styles.modalInput}
+                  />
+                </View>
+                <Text style={styles.modalText}>Skriv in länk:</Text>
+                <View style={styles.modalInputfield}>
+                  <TextInput
+                    editable
+                    multiline
+                    numberOfLines={1}
+                    maxLength={1000}
+                    onChangeText={link => onChangeLink(link)}
+                    value={valueLink}
+                    style={styles.modalInput1}
                   />
                 </View>
                 <View style={styles.modalButtons}>
@@ -148,12 +147,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     borderRadius: 5,
-    alignItems: 'center',
   },
   modalContentHeading: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center'
   },
   modalCheckboxes: {
     marginBottom: 20,
@@ -177,10 +176,16 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
   },
   modalInputfield: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
+  modalInput1: {
+   borderWidth: 1,
+   borderRadius: 10,
+   padding: 20,
+   minWidth: 250,
+   borderColor: colors.gray
+ },
   modalInput: {
-    margin: 10,
     borderWidth: 1,
     borderRadius: 10,
     padding: 20,
@@ -212,12 +217,13 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     fontFamily: 'medium',
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 10
   },
   modalButtons:{
     flexDirection: 'row',
-
+   justifyContent: 'center'
   }
 });
 
-export default ModalForm;
+export default ExerciseModalForm;

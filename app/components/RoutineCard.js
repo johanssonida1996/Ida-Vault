@@ -65,7 +65,7 @@ const RoutineCard = ({
       </View>
       {expandedIndex === index && (
         <View style={styles.expandedContent}>
-          <Text>{description}</Text>
+          <Text style={styles.expandedContentText}>{description}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -120,6 +120,9 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
+  expandedContentText:{
+    fontSize: 16,
+  }
 });
 
 export default RoutineCard;

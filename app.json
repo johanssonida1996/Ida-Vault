@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Ida-Vault",
-    "slug": "Ida-Vault",
+    "slug": "ida-vault",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/vault.jpg",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.idajohansson.idavault"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,21 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1bca69b1-80b0-41fb-ada0-ab185e67ce35"
+      }
+    },
+    "owner": "idajohansson",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/1bca69b1-80b0-41fb-ada0-ab185e67ce35"
     }
   }
 }

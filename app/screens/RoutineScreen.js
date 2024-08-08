@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
+import { StyleSheet, TouchableOpacity, ScrollView, View, AppRegistry } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
@@ -40,17 +40,19 @@ export default function RoutineScreen() {
           }))
           .sort((a, b) => sortOrder[a.type] - sortOrder[b.type]);
         setRoutines(routinesList);
-
+  
         // Uppdatera nextId till det största existerande ID:t + 1
         if (routinesList.length > 0) {
           const maxId = Math.max(...routinesList.map(routine => Number(routine.id)));
           setNextId(maxId + 1);
+        } else {
+          setNextId(1); // Om det inte finns några rutiner, börja med 1
         }
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
     };
-
+  
     fetchData();
   }, []);
 
@@ -91,16 +93,22 @@ export default function RoutineScreen() {
     });
   };
 
+
   const addRoutine = async (routine) => {
     try {
-      // Skapa en referens till dokumentet med det angivna ID:t
-      const docRef = doc(db, 'routines', routine.id);
-  
-      // Använd setDoc för att skapa eller uppdatera dokumentet
-      await setDoc(docRef, routine);
-  
-      // Efter att ha sparat rutinen, hämta rutinerna igen för att uppdatera listan
-      fetchRoutines(); // Om du har en sådan funktion för att uppdatera rutinerna
+      // Använd setDoc med nästa ID
+      const newRoutine = { ...routine, id: nextId.toString() };
+      const docRef = doc(db, 'routines', newRoutine.id);
+      await setDoc(docRef, newRoutine);
+
+      // Öka nextId efter att rutinen har lagts till
+      setNextId(prevId => prevId + 1);
+
+      // Uppdatera rutinerna efter att ha lagt till en ny rutin
+      fetchRoutines();
+
+      // Stäng modalen
+      setModalVisible(false);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
